@@ -42,4 +42,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             Toast.makeText(this@MainActivity, "Initialization Failed", Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (textToSpeech != null) {
+            textToSpeech = null
+        }
+        if (binding != null) {
+            binding = null
+        }
+    }
 }
