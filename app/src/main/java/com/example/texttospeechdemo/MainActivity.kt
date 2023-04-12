@@ -46,6 +46,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     override fun onDestroy() {
         super.onDestroy()
         if (textToSpeech != null) {
+            textToSpeech?.stop()
+            textToSpeech?.shutdown()
             textToSpeech = null
         }
         if (binding != null) {
