@@ -3,4 +3,5 @@ Its a basic text to speech app built using the built-in androids basic TextToSpe
 
 ## Feature/Controls
 Text Field -> Enter Text that you want to hear.
+
 Speak Button -> Speaks the text written in the text Field
