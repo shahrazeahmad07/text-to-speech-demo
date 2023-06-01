@@ -1,11 +1,13 @@
 package com.example.texttospeechdemo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.texttospeechdemo.databinding.ActivityMainBinding
 import java.util.*
+
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var binding: ActivityMainBinding? = null
@@ -23,7 +25,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             if (binding?.tilText?.text.toString().isEmpty()) {
                 Toast.makeText(this, "Enter Text First!!", Toast.LENGTH_SHORT).show()
             } else {
-                speak(binding?.tilText?.text.toString())
+                if (textToSpeech!!.isSpeaking) {
+                    textToSpeech?.stop()
+                    binding?.btnSpeak?.text = getString(R.string.speak)
+                }
+                else {
+                    speak(binding?.tilText?.text.toString())
+                }
             }
         }
     }
@@ -38,6 +46,20 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             if (result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
                 Toast.makeText(this@MainActivity, "Language not Found", Toast.LENGTH_SHORT).show()
             }
+            textToSpeech?.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
+                override fun onStart(utteranceId: String?) {
+                    binding?.btnSpeak?.text = getString(R.string.stop)
+                }
+
+                override fun onDone(utteranceId: String?) {
+                    binding?.btnSpeak?.text = getString(R.string.speak)
+                }
+
+                override fun onError(utteranceId: String?) {
+                    // do Nothing
+                }
+
+            })
         } else {
             Toast.makeText(this@MainActivity, "Initialization Failed", Toast.LENGTH_SHORT).show()
         }
