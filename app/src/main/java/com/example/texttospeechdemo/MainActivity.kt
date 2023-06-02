@@ -18,13 +18,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
+        // setting initializing text to speech
         textToSpeech = TextToSpeech(this, this)
 
-
+        // speak button
         binding?.btnSpeak?.setOnClickListener {
             if (binding?.tilText?.text.toString().isEmpty()) {
                 Toast.makeText(this, "Enter Text First!!", Toast.LENGTH_SHORT).show()
             } else {
+                // checking if currently speaking or not and change process otherwise
                 if (textToSpeech!!.isSpeaking) {
                     textToSpeech?.stop()
                     binding?.btnSpeak?.text = getString(R.string.speak)
@@ -36,16 +38,20 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    //! Speak Method, responsible for the mobile to speak.
     private fun speak(text: String) {
         textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
     }
 
+    // onInit block, called when tts object is initialzed
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             val result = textToSpeech?.setLanguage(Locale.US)
             if (result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
                 Toast.makeText(this@MainActivity, "Language not Found", Toast.LENGTH_SHORT).show()
             }
+
+            // checking timer progress, and changing button text accordingly
             textToSpeech?.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {
                     binding?.btnSpeak?.text = getString(R.string.stop)
